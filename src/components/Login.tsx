@@ -6,19 +6,21 @@ function Login() {
         const client_id = 'l0du0xx5ebj8ooe09vc9gidum44lsg'
         const redirect_uri = 'http://localhost:3000/raid'
         const response_type = 'code'
-        const scope = ''
+        const scope = 'user:read:follows'
         const state = ''
 
         const response = await fetch(
-            `${domain}/authorize?` + 
-            `client_id=${client_id}& ` + 
-            `redirect_url=${redirect_uri}&` +
+            `${domain}` + 
+            `client_id=${client_id}&` + 
+            `redirect_uri=${redirect_uri}&` +
             `response_type=${response_type}&` +
             `scope=${scope}`,
             {
+                method: 'POST',
                 redirect: 'manual'
             }
         )
+        console.log(response)
         window.location.replace(response.url)
     }
     return (

@@ -9,17 +9,7 @@ function App() {
 
 
   return (
-      <>
-        <header className='pb-4'>
-          <Login />
-        </header>
-        <section className=''>
-
-
-            <Route path='/raid' Component={List} />
-          {/* <List /> */}
-        </section>
-      </>
+      <></>
   )
 }
 
