@@ -19,6 +19,7 @@ oAuth = async (req, res, next) => {
         req.oAuth.access_token = keys[code]
         // Object.defineProperty(req.oAuth, 'access_token', {value: keys.code})
         next()
+        return
     }
    
 
