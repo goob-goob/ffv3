@@ -6,7 +6,7 @@ function Login() {
         const client_id = 'l0du0xx5ebj8ooe09vc9gidum44lsg'
         const redirect_uri = 'http://localhost:3000/raid'
         const response_type = 'code'
-        const scope = 'user:read:follows'
+        const scope = 'user:read:follows channel:manage:raids'
         const state = ''
 
         const response = await fetch(

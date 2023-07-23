@@ -13,20 +13,74 @@ const corsOptions = {
     optionsSuccessStatus: 200
 }
 
-const raidEndPoint = 'https://api.twitch.tv/helix/channels/followed'
+const raidEndPoint = 'https://api.twitch.tv/helix/streams/followed?'
+const tokenEndpoint = "https://id.twitch.tv/oauth2/token";
+const startRaidEndPoint = 'https://api.twitch.tv/helix/raids?'
 
 
 // app.use(bodyParser.json())
 app.use(express.json({ limit: '50mb', type: 'application/json' }))
 app.use(express.urlencoded({ limit: '50mb', extended: false, parameterLimit: 50000, type: 'application/x-www-form-urlencoded' }))
 app.use(cors())
-app.use(oAuth)
+// app.use(oAuth)
 // app.get('/', cors(), (req, res) => {
 
 // })
 // app.options('/', cors())
 
+let keys = {}
+
 app.get('/raid', async (req, res) => {
+
+    console.log('///////////')
+    console.log('///////////')
+    console.log('///////////')
+
+    console.log('oAuth...')
+    console.log('keys, ', keys)
+    const code = req.query.code;
+    // console.log('code: ', code)
+
+    
+    if (!code) {
+        res.status(401).send("Missing authorization code");
+    }
+    if(keys.hasOwnProperty(code)) {
+        console.log(`Code: ${code} already used. Sending ${keys.code} authorization token`)
+        req.oAuth = {}
+        req.oAuth.access_token = keys[code]
+        // Object.defineProperty(req.oAuth, 'access_token', {value: keys.code})
+    } else {
+        const params = new URLSearchParams();
+        params.append("client_id", process.env.CLIENT_ID);
+        params.append("client_secret", process.env.CLIENT_SECRET)
+        params.append("code", code);
+        params.append("grant_type", "authorization_code");
+        params.append("redirect_uri", "http://localhost:3000/raid");
+    
+        console.log(tokenEndpoint, params)
+    
+        try {
+            console.log('oAuth Try...')
+            const response = await fetch(tokenEndpoint, { 
+                method: "POST",
+                body: params
+             })
+            console.log('TOKEN Response: ' , response)
+            const data = await response.json()
+            req.oAuth = data
+            console.log(`req.oAuth = `, req.oAuth)
+            keys[code] = req.oAuth.access_token
+            // Object.defineProperties(keys, code, { value: })
+            console.log('Going to next.')
+           
+        } catch (error) {
+            console.log('CATCH')
+            console.log(error)
+        }
+        console.log('oAuth...done')
+    }
+
     console.log('GET /raid ...')
     try {
         console.log('GET /raid Try...')
@@ -43,7 +97,7 @@ app.get('/raid', async (req, res) => {
                 }
             }
         )
-        console.log(user_id_response)
+        console.log('USER response:', user_id_response)
         const user_id_data = await user_id_response.json()
         console.log(user_id_data)
         const user_id = user_id_data.data[0].id
@@ -51,24 +105,84 @@ app.get('/raid', async (req, res) => {
         params.append('user_id', user_id)
         // params.append('first', '1')
 
-        console.log('https://api.twitch.tv/helix/channels/followed', params)
+        console.log(raidEndPoint, params)
         console.log(`Headers: Authorization: Bearer ${access_token},"Client-Id": ${process.env.CLIENT_ID}`)
-        const response = await fetch(raidEndPoint, params, {
-            headers: {
-                Authorization: `Bearer ${access_token}`,
-                "Client-Id": process.env.CLIENT_ID
-            }
-        })
-        // const data = await response.json()
-        // console.log('GET /raid data: ', data)
-        console.log(response)
+        try {
+            const response = await fetch(raidEndPoint + params, {
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                    "Client-Id": process.env.CLIENT_ID
+                }
+            })
+            console.log('RAID response:', response)
+            const data = await response.json()
+            console.log('GET /raid data: ', data)
+            res.json(data)
+        } catch (error) {
+            console.log(error)
+        }
         console.log('GET /raid ...done')
-        // res.json(data)
 
     } catch (error) {
         console.log('...catch')
         console.log(error)
     }
+})
+
+app.get('/startraid', async (req, res) => {
+
+    console.log('oAuth...')
+    console.log('keys, ', keys)
+    const code = req.query.code;
+    // console.log('code: ', code)
+
+    
+    if (!code) {
+        res.status(401).send("Missing authorization code");
+    }
+    if(keys.hasOwnProperty(code)) {
+        console.log(`Code: ${code} already used. Sending ${keys.code} authorization token`)
+        req.oAuth = {}
+        req.oAuth.access_token = keys[code]
+        // Object.defineProperty(req.oAuth, 'access_token', {value: keys.code})
+    } else {
+        const params = new URLSearchParams();
+        params.append("client_id", process.env.CLIENT_ID);
+        params.append("client_secret", process.env.CLIENT_SECRET)
+        params.append("code", code);
+        params.append("grant_type", "authorization_code");
+        params.append("redirect_uri", "http://localhost:3000/raid");
+    
+        console.log(tokenEndpoint, params)
+    
+        try {
+            console.log('oAuth Try...')
+            const response = await fetch(tokenEndpoint, { 
+                method: "POST",
+                body: params
+             })
+            console.log('TOKEN Response: ' , response)
+            const data = await response.json()
+            req.oAuth = data
+            console.log(`req.oAuth = `, req.oAuth)
+            keys[code] = req.oAuth.access_token
+            // Object.defineProperties(keys, code, { value: })
+            console.log('Going to next.')
+           
+        } catch (error) {
+            console.log('CATCH')
+            console.log(error)
+        }
+        console.log('oAuth...done')
+    }
+
+    const broadcasterId = req.query.broadcaster_id
+    const accessToken = oAuth.access_token
+
+    const params = new URLSearchParams()
+    params.append('from_broadcaster_id')
+    params.append('to_broadcaster_id')
+    const startRaidResponse = await fetch(startRaidEndPoint, params)
 })
 
 app.listen(port, () => console.log('Server running on port ', port))
