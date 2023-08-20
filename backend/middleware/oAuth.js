@@ -7,7 +7,8 @@ oAuth = async (req, res, next) => {
     console.log('oAuth...')
     console.log('keys, ', keys)
     const code = req.query.code;
-    // console.log('code: ', code)
+    console.log('query', req.query)
+    console.log('code: ', code)
 
     
     if (!code) {

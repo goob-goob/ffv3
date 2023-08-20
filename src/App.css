@@ -3,7 +3,7 @@
   margin: 0 auto;
   padding: 1rem;
   text-align: center;
-  outline: 2px dotted red;
+  /* outline: 2px dotted red; */
   width: 100%;
 }
 
@@ -37,7 +37,7 @@
 
 .card {
   /* padding: 2em; */
-  outline: 1px solid white;
+  /* outline: 1px solid white; */
   background-color: #7A32E6;
   width: 100%;
   display: flex;
