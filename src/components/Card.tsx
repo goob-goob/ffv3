@@ -28,9 +28,6 @@ function Card({ code, person, properties }) {
                 <div className="flex-1 truncate">
                     <div className="flex items-center space-x-3">
                         <h3 className="truncate text-sm font-medium text-gray-800">{properties.user_name} streaming {properties.game_name}</h3>
-                        {/* <span className="inline-flex flex-shrink-0 items-center rounded-full bg-green-50 px-1.5 py-0.5 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                                        {person.role}
-                                    </span> */}
                     </div>
                     <p className="mt-1 truncate text-sm text-gray-500">{ }{ }</p>
                     <p className="mt-1 truncate text-sm text-gray-500">{ }{properties.title}{ }</p>

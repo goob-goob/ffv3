@@ -6,6 +6,7 @@ import './index.css'
 import Root from './routes/root'
 import ErrorPage from "./error-page";
 import List from './components/List.tsx'
+import ManageFolders from './components/ManageFolders.tsx'
 
 import {
   createBrowserRouter,
@@ -23,6 +24,16 @@ const router = createBrowserRouter([
     }
     ]
   },
+  {
+    path: "/folders",
+    element: <Root />,
+    errorElement: <ErrorPage />,
+    children: [{
+      
+      element: <ManageFolders />
+    }
+    ]
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

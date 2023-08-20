@@ -8,7 +8,6 @@ const app = express()
 const bodyParser = require('body-parser')
 const oAuth = require('./middleware/oAuth')
 const mongoose = require('mongoose')
-// const User = require('./model/User')
 const Follow = require('./model/Follow')
 
 const corsOptions = {
@@ -94,7 +93,6 @@ app.post('/update', async (req, res) => {
     const userId = currentUserData.id
     console.log('userId', userId)
 
-    // const Users = mongoose.model('User', User.userSchema)
     const follow = new Follow({
         userName: null,
         twitchID: id,
@@ -107,6 +105,19 @@ app.post('/update', async (req, res) => {
 })
 
 app.get('/getFollows', (req, res) => {
+
+})
+
+app.get('/manageFolders', async (req, res) => {
+    
+    const accessToken = req.oAuth.access_token
+    const currentUserData = await getCurrentUserData(accessToken)
+    const currentUserId = currentUserData.id
+    
+    const Follow = mongoose.model('Follow', followSchema)
+    const follows = await Follow.find({ parentTwitchID: currentUserId })
+
+    res.json(follows)
 
 })
 
