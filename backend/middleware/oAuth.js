@@ -1,5 +1,7 @@
 const fetch = require('node-fetch')
 
+const User = require('../model/User')
+
 const tokenEndpoint = "https://id.twitch.tv/oauth2/token";
 let keys = {}
 

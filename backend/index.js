@@ -9,6 +9,7 @@ const bodyParser = require('body-parser')
 const oAuth = require('./middleware/oAuth')
 const mongoose = require('mongoose')
 const Follow = require('./model/Follow')
+const User = require('./model/User')
 
 const corsOptions = {
     origin: 'http://localhost:3000',
@@ -35,6 +36,7 @@ app.get('/raid', async (req, res) => {
     try {
         console.log('GET /raid Try...')
         console.log('req.oAuth: ', req.oAuth)
+
         const params = new URLSearchParams()
 
         const accessToken = req.oAuth.access_token
@@ -48,9 +50,29 @@ app.get('/raid', async (req, res) => {
             console.log('userId', userId)
 
             const userLiveFollows = await getCurrentUserLiveFollows(accessToken, userId)
+            // console.log(userLiveFollows.data)
 
-            const follows = await Follow.find({ parentTwitchID: userId })
-            console.log('follows: ', follows)
+            const follows = await Follow.find({ parentTwitchID: userId }).exec()
+
+            Object.entries(userLiveFollows.data).forEach(([index, entry]) => {
+                console.log(entry.id)
+                const exists = Follow.exists({ twitchID: entry.id, parentTwitchID: userId })
+                console.log('exists: ', exists)
+                if (!exists) {
+                    console.log('!exists')
+                    const follow = new Follow({
+                        userName: null,
+                        parentTwitchID: userId,
+                        twitchID: entry.id,
+                        folder: null,
+                        notes: '',
+                        lastRaided: ''
+                    })
+                    follow.save()
+                }
+            })
+
+            // console.log('follows: ', follows)
 
             res.json(userLiveFollows)
             console.log('GET /raid ...done')
@@ -104,16 +126,29 @@ app.post('/update', async (req, res) => {
     res.status(200).end()
 })
 
-app.get('/getFollows', (req, res) => {
+app.get('/getFollows', async (req, res) => {
+    console.log('/getFollows')
+    const accessToken = req.oAuth.access_token
+    // console.log(`Access token: ${accessToken}`)
 
+    try {
+        const currentUserData = await getCurrentUserData(accessToken)
+        // console.log('currentUserData', currentUserData)
+
+        const userId = currentUserData.id
+        console.log('userId', userId)
+    } catch (error) {
+        console.log(error)
+    }
+    res.send(200).end()
 })
 
 app.get('/manageFolders', async (req, res) => {
-    
+
     const accessToken = req.oAuth.access_token
     const currentUserData = await getCurrentUserData(accessToken)
     const currentUserId = currentUserData.id
-    
+
     const Follow = mongoose.model('Follow', followSchema)
     const follows = await Follow.find({ parentTwitchID: currentUserId })
 
@@ -136,18 +171,29 @@ app.listen(port, () => console.log('Server running on port ', port))
 
 async function getCurrentUserData(accessToken) {
     console.log('getCurrentUserData')
-    const userInfoResponse = await fetch('https://api.twitch.tv/helix/users',
-        {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-                "Client-Id": process.env.CLIENT_ID
+    console.log('accessToken', accessToken)
+
+    try {
+
+        const userInfoResponse = await fetch('https://api.twitch.tv/helix/users',
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    "Client-Id": process.env.CLIENT_ID
+                }
             }
-        }
-    )
+        )
+        const userInfoData = await userInfoResponse.json()
+        console.log('userInfoData', userInfoData)
+
+        return userInfoData.data[0]
+    }
+    catch (error) {
+        console.log(error)
+        return
+    }
     // console.log('USER response:', userInfoResponse)
-    const userInfoData = await userInfoResponse.json()
-    // console.log('userInfoData', userInfoData)
-    return userInfoData.data[0]
+
 }
 
 async function getCurrentUserLiveFollows(accessToken, userId) {

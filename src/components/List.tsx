@@ -24,7 +24,13 @@ function List({ }) {
         })
             .then(res => res.json())
             .then(res => { console.log(res, typeof res); console.log(res.data, typeof res.data); setRaidData(res.data) })
-        fetch(`http://localhost:3001/getFollows?code=${code}`)
+        // fetch(`http://localhost:3001/getFollows?code=${code}`, {
+        //     method: 'GET',
+        //     headers: {
+        //         'Content-Type': 'application.json',
+        //         Accept: 'application/json'
+        //     }
+        // })
     }, [code])
 
     
