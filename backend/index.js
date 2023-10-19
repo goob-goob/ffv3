@@ -54,14 +54,17 @@ app.get('/raid', async (req, res) => {
 
             // const follows = await Follow.find({ parentTwitchID: userId }).exec()
 
-            Object.entries(userLiveFollows.data).forEach(([index, entry]) => {
-                console.log(entry.id)
-                const exists = Follow.exists({ twitchID: entry.id, parentTwitchID: userId })
+            Object.entries(userLiveFollows.data).forEach(async ([index, entry]) => {
+                // console.log(entry.id)
+                let exists = await Follow.find({ twitchID: entry.id, parentTwitchID: userId }).exec()
+
                 // console.log('exists: ', exists)
-                if (!exists) {
-                    console.log('!exists')
+                if (exists.length) {
+                    // console.log('nothing for now')
+                } else {
+                    // console.log(`${entry.id}Does not have a db entry. Adding one now.`)
                     const follow = new Follow({
-                        userName: null,
+                        userName: entry.user_name,
                         parentTwitchID: userId,
                         twitchID: entry.id,
                         folder: null,
@@ -72,9 +75,13 @@ app.get('/raid', async (req, res) => {
                 }
             })
 
-            // console.log('follows: ', follows)
+            let userLiveDBFollows = await Follow.find({ parentTwitchID: userId }).exec()
+            console.log(userLiveDBFollows)
+            res.json({data: [...userLiveDBFollows]})
 
-            res.json(userLiveFollows)
+            // console.log('follows: ', follows)
+            console.log(userLiveFollows)
+            // res.json(userLiveFollows)
             console.log('GET /raid ...done')
         } catch (error) {
             console.log(error)
