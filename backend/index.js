@@ -9,14 +9,14 @@ const bodyParser = require('body-parser')
 const oAuth = require('./middleware/oAuth')
 const mongoose = require('mongoose')
 const Follow = require('./model/Follow')
-const User = require('./model/User')
+// const User = require('./model/User')
 
 const corsOptions = {
     origin: 'http://localhost:3000',
     optionsSuccessStatus: 200
 }
 
-const startRaidEndPoint = 'https://api.twitch.tv/helix/raids?'
+// const startRaidEndPoint = 'https://api.twitch.tv/helix/raids?'
 
 
 // app.use(bodyParser.json())
@@ -52,12 +52,12 @@ app.get('/raid', async (req, res) => {
             const userLiveFollows = await getCurrentUserLiveFollows(accessToken, userId)
             // console.log(userLiveFollows.data)
 
-            const follows = await Follow.find({ parentTwitchID: userId }).exec()
+            // const follows = await Follow.find({ parentTwitchID: userId }).exec()
 
             Object.entries(userLiveFollows.data).forEach(([index, entry]) => {
                 console.log(entry.id)
                 const exists = Follow.exists({ twitchID: entry.id, parentTwitchID: userId })
-                console.log('exists: ', exists)
+                // console.log('exists: ', exists)
                 if (!exists) {
                     console.log('!exists')
                     const follow = new Follow({
@@ -115,15 +115,34 @@ app.post('/update', async (req, res) => {
     const userId = currentUserData.id
     console.log('userId', userId)
 
-    const follow = new Follow({
-        userName: null,
-        twitchID: id,
-        parentTwitchID: userId,
-        notes: notes
-    })
+    let existing = []
+    await Follow.find({ parentTwitchID: userId })
+        .then((result) => {
 
-    await follow.save()
-    res.status(200).end()
+            // console.log(result)
+            existing = [...result]
+        })
+    console.log(existing)
+    console.log('if (existing.length)', existing.length)
+    if (existing.length) {
+        Follow.findOneAndUpdate({ parentTwitchID: userId }, {
+            userName: null,
+            twitchID: id,
+            parentTwitchID: userId,
+            notes: notes
+        }).exec()
+    } else {
+        const follow = new Follow({
+            userName: null,
+            twitchID: id,
+            parentTwitchID: userId,
+            notes: notes
+        })
+
+        await follow.save()
+
+        res.status(200).end()
+    }
 })
 
 app.get('/getFollows', async (req, res) => {
