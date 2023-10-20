@@ -38,12 +38,14 @@ function List({ }) {
     return (
         <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {Object.entries(raidData).map(([person, properties]) => (
+                properties.isLive ?
                 <Card 
+                    key={person}
                     code={code}
                     person={person}
                     properties={properties}
                 />
-            ))}
+            : <></>))}
         </ul>
     )
 }

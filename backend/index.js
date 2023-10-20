@@ -61,22 +61,32 @@ app.get('/raid', async (req, res) => {
                 // console.log('exists: ', exists)
                 if (exists.length) {
                     // console.log('nothing for now')
+                    await Follow.findOneAndUpdate({twitchID: entry.id, parentTwitchID: userId}, {
+                        game: entry.game_name,
+                        title: entry.title,
+                        thumbnail: entry.thumbnail_url,
+                        isLive: entry.type === 'live' 
+                    })
+
                 } else {
                     // console.log(`${entry.id}Does not have a db entry. Adding one now.`)
                     const follow = new Follow({
                         userName: entry.user_name,
                         parentTwitchID: userId,
                         twitchID: entry.id,
+                        thumbnail: entry.thumbnail_url,
                         folder: null,
+                        game: entry.game_name,
                         notes: '',
-                        lastRaided: ''
+                        lastRaided: '',
+                        isLive: true
                     })
-                    follow.save()
+                    await follow.save()
                 }
             })
 
             let userLiveDBFollows = await Follow.find({ parentTwitchID: userId }).exec()
-            console.log(userLiveDBFollows)
+            // console.log(userLiveDBFollows)
             res.json({data: [...userLiveDBFollows]})
 
             // console.log('follows: ', follows)
@@ -120,37 +130,17 @@ app.post('/update', async (req, res) => {
     // console.log('currentUserData', currentUserData)
 
     const userId = currentUserData.id
-    console.log('userId', userId)
+    // console.log('userId', userId)
 
-    let existing = []
-    await Follow.find({ parentTwitchID: userId })
-        .then((result) => {
-
-            // console.log(result)
-            existing = [...result]
-        })
-    console.log(existing)
-    console.log('if (existing.length)', existing.length)
-    if (existing.length) {
-        Follow.findOneAndUpdate({ parentTwitchID: userId }, {
-            userName: null,
-            twitchID: id,
-            parentTwitchID: userId,
-            notes: notes
-        }).exec()
-    } else {
-        const follow = new Follow({
-            userName: null,
-            twitchID: id,
-            parentTwitchID: userId,
-            notes: notes
-        })
-
-        await follow.save()
+    Follow.findOneAndUpdate({ parentTwitchID: userId, twitchID: id }, {
+        twitchID: id,
+        parentTwitchID: userId,
+        notes: notes
+    }).exec()
 
         res.status(200).end()
     }
-})
+)
 
 app.get('/getFollows', async (req, res) => {
     console.log('/getFollows')

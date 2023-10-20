@@ -1,18 +1,21 @@
 import React from "react"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useFetcher } from "react-router-dom"
 
 function Card({ code, person, properties }) {
 
-    const [text, setText] = useState('')
+    const [text, setText] = useState(properties.notes)
 
-
+    useEffect(() => {
+        setText(properties.notes)
+    }, [])
 
     function handleChange(e) {
         setText(e.target.value)
     }
 
     const handleUpdate = (code, id, notes) => {
-        fetch(`http://localhost:3001/update?code=${code}&id=${id}&notes=${text}`, {
+        fetch(`http://localhost:3001/update?code=${code}&id=${id}&notes=${notes}`, {
             method: 'POST',
 
         })
@@ -21,13 +24,15 @@ function Card({ code, person, properties }) {
             })
     }
 
+    // if(!properties.game) return (<div key={person}></div>)
+
     return (
-        <li key={person} className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow">
+        <li className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow">
             <div className="flex w-full items-center justify-between space-x-6 p-6">
-                <img className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src={properties.thumbnail_url} alt="" />
+                <img className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300" src={properties.thumbnail} alt="" />
                 <div className="flex-1 truncate">
                     <div className="flex items-center space-x-3">
-                        <h3 className="truncate text-sm font-medium text-gray-800">{properties.user_name} streaming {properties.game_name}</h3>
+                        <h3 className="truncate text-sm font-medium text-gray-800">{properties.userName} streaming {properties.game}</h3>
                     </div>
                     <p className="mt-1 truncate text-sm text-gray-500">{ }{ }</p>
                     <p className="mt-1 truncate text-sm text-gray-500">{ }{properties.title}{ }</p>
@@ -36,8 +41,14 @@ function Card({ code, person, properties }) {
             </div>
             <div className='flex items-center justify-center'>
 
-                <iframe
+                {/* <iframe
                     src={`https://player.twitch.tv/?channel=${properties.user_name}&parent=localhost&muted=true&autoplay=false`}
+                    height="200"
+                    allowFullScreen
+                    className='w-11/12'>
+                </iframe> */}
+                <iframe
+                    src={`https://player.twitch.tv/?channel=${properties.userName}&parent=localhost&muted=true&autoplay=false`}
                     height="200"
                     allowFullScreen
                     className='w-11/12'>
@@ -73,13 +84,13 @@ function Card({ code, person, properties }) {
                         {/* Update Info */}
                         {/* </a>  */}
                         <button className="bg-white hover:text-[#535bf2] relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
-                            onClick={() => handleUpdate(code, properties.user_id, text)}>
+                            onClick={() => handleUpdate(code, properties.twitchID, text)}>
                             Update Info
                         </button>
                     </div>
                     <div className="-ml-px flex w-0 flex-1">
                         <a
-                            href={`http://localhost:3001/startraid?broadcaster_id=${properties.user_id}&code=${code}`}
+                            href={`http://localhost:3001/startraid?broadcaster_id=${properties.twitchID}&code=${code}`}
                             className=" relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
                         >
                             {/* <PhoneIcon className="h-5 w-5 text-gray-400" aria-hidden="true" /> */}
