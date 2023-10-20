@@ -37,8 +37,6 @@ app.get('/raid', async (req, res) => {
         console.log('GET /raid Try...')
         console.log('req.oAuth: ', req.oAuth)
 
-        const params = new URLSearchParams()
-
         const accessToken = req.oAuth.access_token
         // console.log(`Access token: ${accessToken}`)
 
@@ -49,24 +47,28 @@ app.get('/raid', async (req, res) => {
             const userId = currentUserData.id
             console.log('userId', userId)
 
+            const reset = await Follow.updateMany({ parentTwitchID: userId }, { isLive: false }).exec()
+            console.log(reset.modifiedCount)
+
             const userLiveFollows = await getCurrentUserLiveFollows(accessToken, userId)
             // console.log(userLiveFollows.data)
 
             // const follows = await Follow.find({ parentTwitchID: userId }).exec()
 
-            Object.entries(userLiveFollows.data).forEach(async ([index, entry]) => {
-                // console.log(entry.id)
+            const promises = Object.values(userLiveFollows.data).map(async entry => {
+                console.log(entry)
                 let exists = await Follow.find({ twitchID: entry.id, parentTwitchID: userId }).exec()
 
                 // console.log('exists: ', exists)
                 if (exists.length) {
-                    // console.log('nothing for now')
+                    console.log(`Updating id ${entry.id}`)
                     await Follow.findOneAndUpdate({twitchID: entry.id, parentTwitchID: userId}, {
                         game: entry.game_name,
                         title: entry.title,
                         thumbnail: entry.thumbnail_url,
-                        isLive: entry.type === 'live' 
-                    })
+                        isLive: true 
+                    }).exec()
+
 
                 } else {
                     // console.log(`${entry.id}Does not have a db entry. Adding one now.`)
@@ -85,12 +87,13 @@ app.get('/raid', async (req, res) => {
                 }
             })
 
-            let userLiveDBFollows = await Follow.find({ parentTwitchID: userId }).exec()
-            // console.log(userLiveDBFollows)
+            await Promise.all(promises)
+            let userLiveDBFollows = await Follow.find({ parentTwitchID: userId, isLive: true })
+            console.log(userLiveDBFollows)
             res.json({data: [...userLiveDBFollows]})
 
             // console.log('follows: ', follows)
-            console.log(userLiveFollows)
+            // console.log(userLiveFollows)
             // res.json(userLiveFollows)
             console.log('GET /raid ...done')
         } catch (error) {

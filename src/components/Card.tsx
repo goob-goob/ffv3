@@ -2,6 +2,12 @@ import React from "react"
 import { useState, useEffect } from 'react'
 import { useFetcher } from "react-router-dom"
 
+import { Fragment } from 'react'
+import { Popover, Transition } from '@headlessui/react'
+import { ChevronDownIcon, PhoneIcon, PlayCircleIcon, RectangleGroupIcon } from '@heroicons/react/20/solid'
+import { ChartPieIcon, CursorArrowRaysIcon, FingerPrintIcon, SquaresPlusIcon } from '@heroicons/react/24/outline'
+
+
 function Card({ code, person, properties }) {
 
     const [text, setText] = useState(properties.notes)
@@ -37,69 +43,74 @@ function Card({ code, person, properties }) {
                     <p className="mt-1 truncate text-sm text-gray-500">{ }{ }</p>
                     <p className="mt-1 truncate text-sm text-gray-500">{ }{properties.title}{ }</p>
                 </div>
-
             </div>
-            <div className='flex items-center justify-center'>
-
-                {/* <iframe
-                    src={`https://player.twitch.tv/?channel=${properties.user_name}&parent=localhost&muted=true&autoplay=false`}
-                    height="200"
-                    allowFullScreen
-                    className='w-11/12'>
-                </iframe> */}
-                <iframe
-                    src={`https://player.twitch.tv/?channel=${properties.userName}&parent=localhost&muted=true&autoplay=false`}
-                    height="200"
-                    allowFullScreen
-                    className='w-11/12'>
-                </iframe>
-            </div>
-            <div className='flex items-center justify-center pb-2'>
-                <div className="w-11/12">
-                    {/* <label htmlFor="comment" className="block text-sm font-medium leading-6 text-gray-900">
-          Add your comment
-        </label> */}
-                    <div className="mt-2">
-                        <textarea
-                            rows={2}
-                            name="comment"
-                            id="comment"
-                            value={text}
-                            className="resize-none p-3 bg-white block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                            // defaultValue={''}
-                            onChange={e => handleChange(e)}
-                        />
-                    </div>
-                    {/* <button>Update comment</button> */}
-                </div>
-            </div>
-            <div>
-                <div className="-mt-px flex divide-x divide-gray-200 p-1">
-                    <div className="flex w-0 flex-1">
-                        {/* <a
-                                        href={`http://localhost:3001/update?code=${code}&id=${properties.user_id}`}
-                                        className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
-                                    >
-                                        {/* <EnvelopeIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />  */}
-                        {/* Update Info */}
-                        {/* </a>  */}
-                        <button className="bg-white hover:text-[#535bf2] relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
-                            onClick={() => handleUpdate(code, properties.twitchID, text)}>
-                            Update Info
-                        </button>
-                    </div>
-                    <div className="-ml-px flex w-0 flex-1">
-                        <a
-                            href={`http://localhost:3001/startraid?broadcaster_id=${properties.twitchID}&code=${code}`}
-                            className=" relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
-                        >
-                            {/* <PhoneIcon className="h-5 w-5 text-gray-400" aria-hidden="true" /> */}
-                            Raid!
-                        </a>
+            <Popover className="relative   shadow">
+                <div className="bg-white py-5">
+                    <div className="mx-auto max-w-7xl px-6 lg:px-8">
+                        <Popover.Button className="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
+                            More Info
+                            <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+                        </Popover.Button>
                     </div>
                 </div>
-            </div>
-        </li>
+
+                <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-200"
+                    enterFrom="opacity-0 -translate-y-1"
+                    enterTo="opacity-100 translate-y-0"
+                    leave="transition ease-in duration-150"
+                    leaveFrom="opacity-100 translate-y-0"
+                    leaveTo="opacity-0 -translate-y-1"
+                >
+                    <Popover.Panel className="absolute inset-x-0 top-20 z-10 bg-white pt-16 shadow-lg ring-1 ring-gray-900/5 flex flex-col justify-center">
+                        <div>
+                            <div>
+                                <iframe
+                                    src={`https://player.twitch.tv/?channel=${properties.userName}&parent=localhost&muted=true&autoplay=false`}
+                                    height="200"
+                                    allowFullScreen
+                                    className='w-11/12 ml-4'>
+                                </iframe>
+                            </div>
+                            <div className='flex items-center justify-center '>
+                                <div className="w-11/12">
+                                    <div className="mt-2">
+                                        <textarea
+                                            rows={2}
+                                            name="comment"
+                                            id="comment"
+                                            value={text}
+                                            className="resize-none p-3 bg-white block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                            // defaultValue={''}
+                                            onChange={e => handleChange(e)}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div className="-mt-px flex divide-x divide-gray-200 p-1">
+                                    <div className="flex w-0 flex-1">
+                                        <button className="bg-white hover:text-[#535bf2] relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+                                            onClick={() => handleUpdate(code, properties.twitchID, text)}>
+                                            Update Info
+                                        </button>
+                                    </div>
+                                    <div className="-ml-px flex w-0 flex-1">
+                                        <a
+                                            href={`http://localhost:3001/startraid?broadcaster_id=${properties.twitchID}&code=${code}`}
+                                            className=" relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+                                        >
+                                            Raid!
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </Popover.Panel>
+                </Transition>
+            </Popover>
+        </li >
     )
 }
 
