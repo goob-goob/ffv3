@@ -11,10 +11,10 @@ export default function Root() {
             <header className={`pb-4 flex items-center ${code ? 'justify-between' : 'justify-center'}`}>
                 <section className='flex justify-between w-56'>
                     <Login />
-                    {code ? <ManageFoldersButton /> : null}
+                    {/* {code ? <ManageFoldersButton /> : null} */}
                     
                 </section>
-                {code ? <Toggle /> : null}
+                {/* {code ? <Toggle /> : null} */}
                 {/* <Toggle /> */}
             </header>
             <section className=''>
