@@ -177,7 +177,7 @@ app.get('/manageFolders', async (req, res) => {
 })
 
 app.get('/', (req, res) => {
-    res.render('../dist/index.html')
+    res.render('../dist/index')
 })
 
 
