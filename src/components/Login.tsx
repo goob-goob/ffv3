@@ -9,7 +9,8 @@ function Login() {
         console.log('click')
         const domain = 'https://id.twitch.tv/oauth2/authorize?'
         const client_id = 'l0du0xx5ebj8ooe09vc9gidum44lsg'
-        const redirect_uri = 'http://localhost:3000/raid'
+        const redirect_uri = 'https://ffv3.onrender.com/raid'
+        // const redirect_uri = 'http://localhost:3000/raid'
         const response_type = 'code'
         const scope = 'user:read:follows channel:manage:raids'
         const state = ''
