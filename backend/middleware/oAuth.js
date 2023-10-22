@@ -14,7 +14,7 @@ oAuth = async (req, res, next) => {
 
     
     if (!code) {
-        res.status(401).send("Missing authorization code");
+        // res.status(401).send("Missing authorization code");
     }
     if(keys.hasOwnProperty(code)) {
         console.log(`Code: ${code} already used. Sending ${keys.code} authorization token`)
@@ -31,7 +31,8 @@ oAuth = async (req, res, next) => {
     params.append("client_secret", process.env.CLIENT_SECRET)
     params.append("code", code);
     params.append("grant_type", "authorization_code");
-    params.append("redirect_uri", "http://localhost:3000/raid");
+    // params.append("redirect_uri", "http://localhost:3000/raid");
+    params.append("redirect_uri", "https://followfolders.com/raid");
 
     console.log(tokenEndpoint, params)
 
