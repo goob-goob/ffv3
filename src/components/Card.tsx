@@ -21,7 +21,8 @@ function Card({ code, person, properties }) {
     }
 
     const handleUpdate = (code, id, notes) => {
-        fetch(`http://localhost:3001/update?code=${code}&id=${id}&notes=${notes}`, {
+        fetch(`https://ffv3.onrender.com:3001/update?code=${code}&id=${id}&notes=${notes}`, {
+        // fetch(`http://localhost:3001/update?code=${code}&id=${id}&notes=${notes}`, {
             method: 'POST',
 
         })
