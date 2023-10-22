@@ -12,7 +12,8 @@ const Follow = require('./model/Follow')
 // const User = require('./model/User')
 
 const corsOptions = {
-    origin: 'http://localhost:3000',
+    // origin: 'http://localhost:3000',
+    origin: 'https//ffv3.onrender.com:3000',
     optionsSuccessStatus: 200
 }
 
