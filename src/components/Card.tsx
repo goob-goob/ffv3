@@ -68,7 +68,7 @@ function Card({ code, person, properties }) {
                         <div>
                             <div>
                                 <iframe
-                                    src={`https://player.twitch.tv/?channel=${properties.userName}&parent=localhost&muted=true&autoplay=false`}
+                                    src={`https://player.twitch.tv/?channel=${properties.userName}&parent=ffv3.onrender.com&muted=true&autoplay=false`}
                                     height="200"
                                     allowFullScreen
                                     className='w-11/12 ml-4'>
