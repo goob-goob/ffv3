@@ -37,7 +37,7 @@ oAuth = async (req, res, next) => {
         // res.redirect(redirect_uri)
         res.redirect('/')
     }
-    if(keys.hasOwnProperty(code)) {
+    if(keys.hasOwnProperty(code) && keys.code !== undefined) {
         console.log(`Code: ${code} already used. Sending ${keys.code} authorization token`)
         req.oAuth = {}
         req.oAuth.access_token = keys[code]
