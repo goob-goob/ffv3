@@ -99,7 +99,7 @@ function Card({ code, person, properties }) {
                                     </div>
                                     <div className="-ml-px flex w-0 flex-1">
                                         <a
-                                            href={`http://localhost:3001/startraid?broadcaster_id=${properties.twitchID}&code=${code}`}
+                                            href={`https://ffv3.onrender.com:3001/startraid?broadcaster_id=${properties.twitchID}&code=${code}`}
                                             className=" relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
                                         >
                                             Raid!

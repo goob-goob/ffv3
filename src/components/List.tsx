@@ -15,7 +15,8 @@ function List({ }) {
 
     useEffect(() => {
         console.log('<List /> useEffect()')
-        fetch(`http://localhost:3001/raid?code=${code}`, {
+        fetch(`https://ffv3.onrender.com:3001/raid?code=${code}`, {
+        // fetch(`http://localhost:3001/raid?code=${code}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application.json',
