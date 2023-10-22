@@ -13,7 +13,7 @@ const Follow = require('./model/Follow')
 
 const corsOptions = {
     // origin: 'http://localhost:3000',
-    origin: 'https//ffv3.onrender.com:3000',
+    origin: 'https//followfolders.com.com',
     optionsSuccessStatus: 200
 }
 
