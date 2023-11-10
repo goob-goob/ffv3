@@ -38,6 +38,8 @@ app.get('/raid', async (req, res) => {
         console.log('GET /raid Try...')
         console.log('req.oAuth: ', req.oAuth)
 
+        if(!req.oAuth) { res.redirect('/') }
+
         const accessToken = req.oAuth.access_token
         // console.log(`Access token: ${accessToken}`)
 
