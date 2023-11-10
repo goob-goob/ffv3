@@ -15,7 +15,7 @@ function List({ }) {
 
     useEffect(() => {
         console.log('<List /> useEffect()')
-        fetch(`https://followfolders.com:3000/raid?code=${code}`, {
+        fetch(`https://followfolders.com:3001/raid?code=${code}`, {
         // fetch(`http://localhost:3001/raid?code=${code}`, {
             method: 'GET',
             headers: {
