@@ -178,9 +178,9 @@ app.get('/manageFolders', async (req, res) => {
 
 })
 
-app.get('/', (req, res) => {
-    res.redirect('../dist/index')
-})
+// app.get('/', (req, res) => {
+//     res.redirect('../dist/index')
+// })
 
 
 
